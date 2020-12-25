@@ -1,8 +1,8 @@
 package router
 
 import (
-	"SecKill/sk_admin/common"
-	"SecKill/sk_admin/controller"
+	"github.com/seckill/admin/common"
+	"github.com/seckill/admin/controller"
 )
 
 func RegiterRouter(handler *common.RouterHandler) {

@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"SecKill/sk_admin/common"
-	"SecKill/sk_admin/model"
-	"SecKill/sk_admin/service"
-	"SecKill/sk_admin/util"
+	"github.com/seckill/admin/common"
+	"github.com/seckill/admin/model"
+	"github.com/seckill/admin/service"
+	"github.com/seckill/admin/util"
 )
 
 type ProductController struct {
