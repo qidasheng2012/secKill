@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/seckill/admin/dao"
-	"github.com/seckill/admin/model"
+	"seckill/admin/dao"
+	"seckill/admin/model"
 )
 
 var productDao = new(dao.ProductDao)

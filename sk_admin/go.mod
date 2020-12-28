@@ -1,4 +1,4 @@
-module github.com/seckill/admin
+module seckill/admin
 
 go 1.15
 

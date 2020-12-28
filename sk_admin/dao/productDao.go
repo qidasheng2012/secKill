@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/seckill/admin/common"
-	"github.com/seckill/admin/model"
+	"seckill/admin/common"
+	"seckill/admin/model"
 )
 
 type IProductDao interface {

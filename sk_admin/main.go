@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/seckill/admin/common"
-	"github.com/seckill/admin/router"
+	"seckill/admin/common"
+	"seckill/admin/router"
 )
 
 const (
