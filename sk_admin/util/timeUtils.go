@@ -7,6 +7,10 @@ import (
 )
 
 func ToTime(s string) (time.Time, error) {
+	if len(s) > 10 {
+		s = string([]rune(s)[:10])
+	}
+
 	i, err := strconv.Atoi(s)
 
 	if err != nil {
