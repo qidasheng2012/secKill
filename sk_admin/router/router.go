@@ -16,5 +16,11 @@ func RegiterRouter(handler *common.RouterHandler) {
 	handler.Router("/product/selectAll", productController.SelectAll)
 
 	// 秒杀商品信息路由
+	seckillController := new(controller.SeckillController)
+	handler.Router("/seckill/insert", seckillController.Insert)
+	handler.Router("/seckill/delete", seckillController.Delete)
+	handler.Router("/seckill/update", seckillController.Update)
+	handler.Router("/seckill/selectById", seckillController.SelectById)
+	handler.Router("/seckill/selectAll", seckillController.SelectAll)
 
 }

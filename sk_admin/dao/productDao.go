@@ -20,7 +20,7 @@ type ProductDao struct {
 }
 
 func (p *ProductDao) Insert(product *model.Product) (int64, error) {
-	result, err := common.DB.Exec("INSERT INTO product(`product_name`,`total`,`status`) value(?,?,?)",
+	result, err := common.DB.Exec("INSERT INTO product(`product_name`,`total`,`status`) VALUE(?,?,?)",
 		product.ProductName, product.Total, product.Status)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (p *ProductDao) Insert(product *model.Product) (int64, error) {
 }
 
 func (p *ProductDao) Delete(productId int64) bool {
-	_, err := common.DB.Exec("DELETE FROM product where product_id = ?", productId)
+	_, err := common.DB.Exec("DELETE FROM product WHERE product_id = ?", productId)
 	if err != nil {
 		return false
 	}
@@ -44,7 +44,7 @@ func (p *ProductDao) Delete(productId int64) bool {
 }
 
 func (p *ProductDao) Update(product *model.Product) error {
-	_, err := common.DB.Exec("UPDATE product SET product_name = ? , total = ? , status = ? where product_id = ?",
+	_, err := common.DB.Exec("UPDATE product SET product_name = ? , total = ? , status = ? WHERE product_id = ?",
 		product.ProductName, product.Total, product.Status, product.ProductId)
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (p *ProductDao) Update(product *model.Product) error {
 }
 
 func (p *ProductDao) SelectById(productId int64) (*model.Product, error) {
-	rows, err := common.DB.Query("SELECT product_id,product_name,total,status from product where product_id = ?", productId)
+	rows, err := common.DB.Query("SELECT product_id,product_name,total,status FROM product WHERE product_id = ?", productId)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (p *ProductDao) SelectById(productId int64) (*model.Product, error) {
 }
 
 func (p *ProductDao) SelectAll() ([]*model.Product, error) {
-	rows, err := common.DB.Query("SELECT product_id,product_name,total,status from product")
+	rows, err := common.DB.Query("SELECT product_id,product_name,total,status FROM product")
 	if err != nil {
 		return nil, err
 	}

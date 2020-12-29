@@ -103,7 +103,7 @@ func (p *ProductController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	product := model.Product{
-		ProductId:   uint64(productId),
+		ProductId:   int64(productId),
 		ProductName: productName,
 		Total:       uint64(total),
 		Status:      uint(status),

@@ -26,7 +26,7 @@ func main() {
 	// 创建表
 	common.CreateTable()
 	// 初始化表数据
-	common.InitTable()
+	//common.InitTable()
 
 	// 配置服务
 	server := &http.Server{
