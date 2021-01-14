@@ -156,6 +156,25 @@ func (s *SeckillController) SelectById(w http.ResponseWriter, r *http.Request) {
 	common.ResultJsonOk(w, *seckill)
 }
 
+func (s *SeckillController) SelectEtcdById(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	seckillIdStr := query.Get("seckillId")
+
+	seckill, e := seckillService.SelectEtcdById(seckillIdStr)
+
+	if e != nil {
+		common.ResultFail(w, "product selectEtcdById error")
+		return
+	}
+
+	if seckill == nil {
+		common.ResultFail(w, "product selectEtcdById value is empty")
+		return
+	}
+
+	common.ResultJsonOk(w, *seckill)
+}
+
 func (s *SeckillController) SelectAll(w http.ResponseWriter, r *http.Request) {
 	seckills, err := seckillService.SelectAll()
 

@@ -26,6 +26,10 @@ func (s *SeckillService) SelectById(seckillId int64) (*model.Seckill, error) {
 	return seckillDao.SelectById(seckillId)
 }
 
+func (s *SeckillService) SelectEtcdById(seckillIdStr string) (*model.Seckill, error) {
+	return seckillDao.SelectEtcdById(seckillIdStr)
+}
+
 func (s SeckillService) SelectAll() ([]*model.Seckill, error) {
 	return seckillDao.SelectAll()
 }

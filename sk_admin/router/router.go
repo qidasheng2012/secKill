@@ -21,6 +21,7 @@ func RegiterRouter(handler *common.RouterHandler) {
 	handler.Router("/seckill/delete", seckillController.Delete)
 	handler.Router("/seckill/update", seckillController.Update)
 	handler.Router("/seckill/selectById", seckillController.SelectById)
+	handler.Router("/seckill/selectEtcdById", seckillController.SelectEtcdById)
 	handler.Router("/seckill/selectAll", seckillController.SelectAll)
 
 }

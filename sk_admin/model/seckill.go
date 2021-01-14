@@ -8,5 +8,5 @@ type Seckill struct {
 	Number     uint32    `json:"number"`
 	StartTime  time.Time `json:"startTime"`
 	EndTime    time.Time `json:"endTime"`
-	CreateTime time.Time `json:"createTime"`
+	CreateTime time.Time `json:"-"`
 }

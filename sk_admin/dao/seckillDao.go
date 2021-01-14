@@ -2,6 +2,8 @@ package dao
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -15,43 +17,116 @@ type ISeckillDao interface {
 	Update(*model.Seckill) error
 	SelectById(int64) (*model.Seckill, error)
 	SelectAll() ([]*model.Seckill, error)
+	selectEtcdById(string) (*model.Seckill, error)
 }
 
 type SeckillDao struct {
 }
 
 func (s *SeckillDao) Insert(seckill *model.Seckill) (int64, error) {
+	conn, err := common.DB.Begin()
+	if err != nil {
+		log.Println("db begin failed :", err)
+		return 0, err
+	}
+
 	result, err := common.DB.Exec("INSERT INTO seckill(`name`,`number`,`start_time`,`end_time`,`create_time`) VALUE(?,?,?,?,?)",
 		seckill.Name, seckill.Number, seckill.StartTime, seckill.EndTime, time.Now())
 
 	if err != nil {
+		conn.Rollback()
 		return 0, err
 	}
 
-	id, e := result.LastInsertId()
-	if e != nil {
-		return 0, e
+	id, err := result.LastInsertId()
+	if err != nil {
+		conn.Rollback()
+		return 0, err
 	}
+
+	// 同步到etcd
+	seckill.SeckillId = id
+	seckillIdStr := fmt.Sprintf("%d", id)
+	seckillJson, _ := json.Marshal(seckill)
+	err = common.EtcdPut(seckillIdStr, string(seckillJson))
+	if err != nil {
+		conn.Rollback()
+		return 0, err
+	}
+
+	conn.Commit()
 	return id, nil
 }
 
 func (s *SeckillDao) Delete(seckillId int64) bool {
-	_, err := common.DB.Exec("DELETE FROM seckill WHERE seckill_id = ?", seckillId)
+	conn, err := common.DB.Begin()
 	if err != nil {
+		log.Println("db begin failed :", err)
 		return false
 	}
 
+	_, err = common.DB.Exec("DELETE FROM seckill WHERE seckill_id = ?", seckillId)
+	if err != nil {
+		conn.Rollback()
+		return false
+	}
+
+	// 同步到etcd
+	seckillIdStr := fmt.Sprintf("%d", seckillId)
+	err = common.EtcdDelete(seckillIdStr)
+	if err != nil {
+		conn.Rollback()
+		return false
+	}
+
+	conn.Commit()
 	return true
 }
 
 func (s *SeckillDao) Update(seckill *model.Seckill) error {
-	_, err := common.DB.Exec("UPDATE seckill SET name = ? , number = ? , start_time = ? , end_time = ? WHERE seckill_id = ?",
-		seckill.Name, seckill.Number, seckill.StartTime, seckill.EndTime, seckill.SeckillId)
+	conn, err := common.DB.Begin()
 	if err != nil {
+		log.Println("db begin failed :", err)
 		return err
 	}
 
+	_, err = common.DB.Exec("UPDATE seckill SET name = ? , number = ? , start_time = ? , end_time = ? WHERE seckill_id = ?",
+		seckill.Name, seckill.Number, seckill.StartTime, seckill.EndTime, seckill.SeckillId)
+	if err != nil {
+		conn.Rollback()
+		return err
+	}
+
+	// 同步到etcd
+	seckillIdStr := fmt.Sprintf("%d", seckill.SeckillId)
+	seckillJson, _ := json.Marshal(seckill)
+	err = common.EtcdPut(seckillIdStr, string(seckillJson))
+	if err != nil {
+		conn.Rollback()
+		return err
+	}
+
+	conn.Commit()
 	return nil
+}
+
+func (s *SeckillDao) SelectEtcdById(seckillIdStr string) (*model.Seckill, error) {
+	seckillStr, err := common.EtcdGet(seckillIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	if seckillStr == "" {
+		return nil, nil
+	}
+
+	seckill := model.Seckill{}
+	err = json.Unmarshal([]byte(seckillStr), &seckill)
+	if err != nil {
+		log.Panicf("json error %v", err)
+	}
+
+	return &seckill, nil
 }
 
 func (s *SeckillDao) SelectById(seckillId int64) (*model.Seckill, error) {
