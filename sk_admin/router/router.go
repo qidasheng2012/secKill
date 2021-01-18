@@ -8,7 +8,6 @@ import (
 func RegiterRouter(handler *common.RouterHandler) {
 	// 商品相关路由
 	productController := new(controller.ProductController)
-
 	handler.Router("/product/insert", productController.Insert)
 	handler.Router("/product/delete", productController.Delete)
 	handler.Router("/product/update", productController.Update)

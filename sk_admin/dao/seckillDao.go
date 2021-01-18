@@ -13,7 +13,7 @@ import (
 
 type ISeckillDao interface {
 	Insert(*model.Seckill) (int64, error)
-	Delete(int64) bool
+	Delete(int64) error
 	Update(*model.Seckill) error
 	SelectById(int64) (*model.Seckill, error)
 	SelectAll() ([]*model.Seckill, error)
@@ -58,17 +58,16 @@ func (s *SeckillDao) Insert(seckill *model.Seckill) (int64, error) {
 	return id, nil
 }
 
-func (s *SeckillDao) Delete(seckillId int64) bool {
+func (s *SeckillDao) Delete(seckillId int64) error {
 	conn, err := common.DB.Begin()
 	if err != nil {
-		log.Println("db begin failed :", err)
-		return false
+		return fmt.Errorf("db begin failed :%v", err)
 	}
 
 	_, err = common.DB.Exec("DELETE FROM seckill WHERE seckill_id = ?", seckillId)
 	if err != nil {
 		conn.Rollback()
-		return false
+		return err
 	}
 
 	// 同步到etcd
@@ -76,11 +75,11 @@ func (s *SeckillDao) Delete(seckillId int64) bool {
 	err = common.EtcdDelete(seckillIdStr)
 	if err != nil {
 		conn.Rollback()
-		return false
+		return err
 	}
 
 	conn.Commit()
-	return true
+	return nil
 }
 
 func (s *SeckillDao) Update(seckill *model.Seckill) error {

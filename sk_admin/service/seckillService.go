@@ -14,7 +14,7 @@ func (s *SeckillService) Insert(seckill *model.Seckill) (int64, error) {
 	return seckillDao.Insert(seckill)
 }
 
-func (s *SeckillService) Delete(seckillId int64) bool {
+func (s *SeckillService) Delete(seckillId int64) error {
 	return seckillDao.Delete(seckillId)
 }
 

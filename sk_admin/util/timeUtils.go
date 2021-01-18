@@ -14,7 +14,7 @@ func ToTime(s string) (time.Time, error) {
 	i, err := strconv.Atoi(s)
 
 	if err != nil {
-		log.Printf("time [%s] string can not convert int", s)
+		log.Printf("time [%s] can't convert int", s)
 		return time.Now(), err
 	}
 
